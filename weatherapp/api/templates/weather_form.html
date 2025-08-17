@@ -1,0 +1,35 @@
+<h2>{% if form.instance.pk %}Edit{% else %}New{% endif %} Weather Request</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.location_input.label_tag }} {{ form.location_input }}<br>
+    {{ form.source.label_tag }} {{ form.source }}<br>
+    {{ form.lat.label_tag }} {{ form.lat }}<br>
+    {{ form.lon.label_tag }} {{ form.lon }}<br>
+    <button type="button" onclick="getLocation()">Use My Location</button><br>
+    <script>
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                document.getElementById('id_lat').value = position.coords.latitude;
+                document.getElementById('id_lon').value = position.coords.longitude;
+            });
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    }
+    </script>
+    <button type="submit">Save</button>
+</form>
+<script>
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            document.getElementById('id_lat').value = position.coords.latitude;
+            document.getElementById('id_lon').value = position.coords.longitude;
+        });
+    } else {
+        alert("Geolocation is not supported by this browser.");
+    }
+}
+</script>
+<a href="{% url 'weather_list' %}">Back to list</a>

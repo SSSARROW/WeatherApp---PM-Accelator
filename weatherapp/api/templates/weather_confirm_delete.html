@@ -1,0 +1,7 @@
+<h2>Delete Weather Request?</h2>
+<p>Are you sure you want to delete: {{ record.normalized_location|default:record.location_input }} ?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Yes, Delete</button>
+</form>
+<a href="{% url 'weather_list' %}">Cancel</a>

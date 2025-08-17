@@ -1,0 +1,7 @@
+<h2>Map for {{ record.normalized_location|default:record.location_input }}</h2>
+{% if map_url %}
+    <img src="{{ map_url }}" alt="Map">
+{% else %}
+    <p>Google Maps API key not set.</p>
+{% endif %}
+<a href="{% url 'weather_list' %}">Back</a>

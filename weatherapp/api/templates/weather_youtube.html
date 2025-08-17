@@ -1,0 +1,9 @@
+<h2>YouTube Videos for {{ record.normalized_location|default:record.location_input }}</h2>
+<ul>
+{% for item in videos %}
+    <li><a href="https://www.youtube.com/watch?v={{ item.id.videoId }}" target="_blank">{{ item.snippet.title }}</a></li>
+{% empty %}
+    <li>No videos found.</li>
+{% endfor %}
+</ul>
+<a href="{% url 'weather_list' %}">Back</a>

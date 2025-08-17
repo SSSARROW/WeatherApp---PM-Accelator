@@ -1,0 +1,172 @@
+<h1>Weather Requests</h1>
+<div style="margin-bottom: 10px;">
+    <strong>Created by: Sahan Rajapakshe</strong>
+    <button onclick="showInfo()" style="margin-left: 20px;">Info</button>
+</div>
+<div id="info-modal" style="display:none; position:fixed; top:10%; left:50%; transform:translateX(-50%); background:#fff; border:1px solid #333; padding:20px; z-index:1000; max-width:600px;">
+    <h2>Product Manager Accelerator</h2>
+    <p>The Product Manager Accelerator Program is designed to support PM professionals through every stage of their careers. From students looking for entry-level jobs to Directors looking to take on a leadership role, our program has helped over hundreds of students fulfill their career aspirations.</p>
+    <p>Our Product Manager Accelerator community are ambitious and committed. Through our program they have learnt, honed and developed new PM and leadership skills, giving them a strong foundation for their future endeavors.</p>
+    <p>Here are the examples of services we offer. Check out our website (link under my profile) to learn more about our services.</p>
+    <ul>
+        <li><strong>🚀 PMA Pro</strong>: End-to-end product manager job hunting program that helps you master FAANG-level Product Management skills, conduct unlimited mock interviews, and gain job referrals through our largest alumni network. 25% of our offers came from tier 1 companies and get paid as high as $800K/year.</li>
+        <li><strong>🚀 AI PM Bootcamp</strong>: Gain hands-on AI Product Management skills by building a real-life AI product with a team of AI Engineers, data scientists, and designers. We will also help you launch your product with real user engagement using our 100,000+ PM community and social media channels.</li>
+        <li><strong>🚀 PMA Power Skills</strong>: Designed for existing product managers to sharpen their product management skills, leadership skills, and executive presentation skills</li>
+        <li><strong>🚀 PMA Leader</strong>: We help you accelerate your product management career, get promoted to Director and product executive levels, and win in the board room.</li>
+        <li><strong>🚀 1:1 Resume Review</strong>: We help you rewrite your killer product manager resume to stand out from the crowd, with an interview guarantee. Get started by using our FREE killer PM resume template used by over 14,000 product managers. <a href="https://www.drnancyli.com/pmresume" target="_blank">Resume Template</a></li>
+        <li>🚀 We also published over 500+ free training and courses. Please go to my <a href="https://www.youtube.com/c/drnancyli" target="_blank">YouTube channel</a> and Instagram <a href="https://www.instagram.com/drnancyli" target="_blank">@drnancyli</a> to start learning for free today.</li>
+    </ul>
+    <p><strong>Website:</strong> <a href="https://www.pmaccelerator.io/" target="_blank">https://www.pmaccelerator.io/</a></p>
+    <p><strong>Phone:</strong> +19548891063</p>
+    <p><strong>Industry:</strong> E-Learning Providers</p>
+    <p><strong>Company size:</strong> 2-10 employees</p>
+    <p><strong>Headquarters:</strong> Boston, MA</p>
+    <p><strong>Founded:</strong> 2020</p>
+    <p><strong>Specialties:</strong> Product Management, Product Manager, Product Management Training, Product Management Certification, Product Lead, Product Executive, Associate Product Manager, product management coaching, product manager resume, Product Management Interview, VP of Product, Director of Product, Chief Product Officer, and AI Product Management</p>
+    <button onclick="hideInfo()" style="margin-top:10px;">Close</button>
+</div>
+<div id="info-modal-bg" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.3); z-index:999;" onclick="hideInfo()"></div>
+<script>
+function showInfo() {
+    document.getElementById('info-modal').style.display = 'block';
+    document.getElementById('info-modal-bg').style.display = 'block';
+}
+function hideInfo() {
+    document.getElementById('info-modal').style.display = 'none';
+    document.getElementById('info-modal-bg').style.display = 'none';
+}
+</script>
+
+<div id="my-weather">
+    <h2>Current Weather for Your Location <span id="location-label"></span></h2>
+    <div id="current-weather">Loading...</div>
+    <h3>5-Day Forecast</h3>
+    <!-- Geolocation weather table remains unchanged -->
+    <table id="weather-table" border="1">
+        <thead>
+            <tr><th>Date</th><th>Description</th><th>Temp (°C)</th></tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+<script>
+function showWeather(lat, lon) {
+    console.log('Fetching weather for:', lat, lon);
+    fetch(`/get_weather_api/?lat=${lat}&lon=${lon}`)
+        .then(r => {
+            if (!r.ok) {
+                console.error('API error:', r.status, r.statusText);
+                throw new Error('API error');
+            }
+            return r.json();
+        })
+        .then(data => {
+            console.log('Weather API response:', data);
+            if (data.current) {
+                let w = data.current.weather?.[0]?.description || "";
+                let t = data.current.main?.temp || "";
+                let city = data.current.name || "";
+                document.getElementById('current-weather').innerText = `${w} - ${t}°C`;
+                document.getElementById('location-label').innerText = city ? `(${city})` : "";
+            } else {
+                document.getElementById('current-weather').innerText = "Unable to fetch weather.";
+                document.getElementById('location-label').innerText = "";
+            }
+                    if (data.forecast_summary && data.forecast_summary.length) {
+                        let tbody = document.querySelector('#weather-table tbody');
+                        tbody.innerHTML = "";
+                        data.forecast_summary.forEach(row => {
+                            tbody.innerHTML += `<tr><td>${row.date}</td><td>${row.desc}</td><td>${row.temp}</td></tr>`;
+                        });
+                        document.getElementById('weather-table').style.display = '';
+                    }
+        })
+        .catch((err) => {
+            document.getElementById('current-weather').innerText = "Unable to fetch weather.";
+            document.getElementById('location-label').innerText = "";
+            console.error('Weather fetch error:', err);
+        });
+}
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(pos) {
+        showWeather(pos.coords.latitude, pos.coords.longitude);
+    }, function() {
+        document.getElementById('current-weather').innerText = "Location permission denied.";
+        document.getElementById('location-label').innerText = "";
+    });
+} else {
+    document.getElementById('current-weather').innerText = "Geolocation not supported.";
+    document.getElementById('location-label').innerText = "";
+}
+</script>
+<a href="{% url 'weather_create' %}">+ New Request</a>
+<button onclick="exportRequestsTableToCSV('weather_requests.csv')">Export as CSV</button>
+<button onclick="exportRequestsTableToPDF()">Export as PDF</button>
+<table id="requests-table" border="1" cellpadding="5" cellspacing="0">
+<tr>
+    <th>Location</th>
+    <th>Source</th>
+    <th>Current Weather</th>
+    <th>Forecast (5-day)</th>
+    <th>Actions</th>
+</tr>
+{% for r in records %}
+<tr>
+    <td>{{ r.normalized_location|default:r.location_input }}</td>
+    <td>{{ r.source }}</td>
+    <td>{{ r.current_summary|default:"-" }}</td>
+    <td>
+        {% if r.forecast_summary %}
+        <table border="0">
+            {% for f in r.forecast_summary %}
+            <tr>
+                <td>{{ f.date }}</td>
+                <td>{{ f.desc }}</td>
+                <td>{{ f.temp }}°C</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        -
+        {% endif %}
+    </td>
+    <td>
+        <a href="{% url 'weather_update' r.pk %}">Edit</a> |
+        <a href="{% url 'weather_delete' r.pk %}">Delete</a> |
+        <a href="{% url 'weather_youtube' r.pk %}">YouTube</a> |
+        <!-- Map link removed -->
+    </td>
+</tr>
+{% endfor %}
+<script>
+function exportRequestsTableToCSV(filename) {
+    var csv = [];
+    var rows = document.querySelectorAll("#requests-table tr");
+    for (var i = 0; i < rows.length; i++) {
+        var row = [], cols = rows[i].querySelectorAll("td, th");
+        for (var j = 0; j < cols.length; j++)
+            row.push('"' + cols[j].innerText.replace(/"/g, '""') + '"');
+        csv.push(row.join(","));
+    }
+    var csvFile = new Blob([csv.join("\n")], {type: "text/csv"});
+    var downloadLink = document.createElement("a");
+    downloadLink.download = filename;
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+}
+
+function exportRequestsTableToPDF() {
+    var table = document.getElementById("requests-table");
+    var win = window.open("", "PDF");
+    win.document.write("<html><head><title>Weather Requests PDF</title></head><body>");
+    win.document.write("<h1>Weather Requests</h1>");
+    win.document.write(table.outerHTML);
+    win.document.write("</body></html>");
+    win.document.close();
+    win.print();
+}
+</script>
+</table>
