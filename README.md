@@ -49,12 +49,12 @@ weatherapp/
    ```sh
    python manage.py migrate
    ```
-4.**Create and Add API KEYS to a .env file
+4.**Create and Add API KEYS to a .env file**
   ```sh
    OPENWEATHER_API_KEY="OPENWEATHER_API_KEY"
    YOUTUBE_API_KEY="YOUTUBE_API_KEY"
    DEBUG=true
-    ```
+```
 5. **Run the development server**
    ```sh
    python manage.py runserver
@@ -87,4 +87,5 @@ weatherapp/
 - Implemented utility functions for fetching weather data ([`api/utils.py`](weatherapp/api/utils.py))
 - Set up templates for the web interface
 - Configured project settings and URLs ([`weatherapp/settings.py`](weatherapp/weatherapp/settings.py), [`weatherapp/urls.py`](weatherapp/weatherapp/urls.py))
+
 
